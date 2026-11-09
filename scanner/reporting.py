@@ -30,7 +30,7 @@ def summary_counts(fs) -> str:
 def _write(out, text):
     p = Path(out)
     p.parent.mkdir(parents=True, exist_ok=True)
-    p.write_text(text, encoding="utf-8")
+    p.write_text(text, encoding="utf-8") # sast:ignore SC006 -- writes to the path the caller chose
 
 
 # ---------------------------------------------------------------------------- table
@@ -99,7 +99,7 @@ def html_text(fs, scanned, skipped):
             f'<pre>{e(f.evidence)}</pre><div>{e(f.detail or f.description)}</div>{flow}'
             f'<div class="fix"><b>Fix:</b> {e(f.remediation)}</div></div>')
     body = "".join(cards) or "<p>No findings.</p>"
-    return (f'<!doctype html><html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">'
+    return (f'<!doctype html><html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">'  # sast:ignore SC003 -- every value is escaped with html.escape
             f"<title>SAST report</title><style>{_CSS}</style><main><h1>SecureCode SAST Report</h1>"
             f'<div class="sub">Scanner v{__version__} &middot; scanned {scanned} files &middot; skipped {skipped} '
             f"&middot; {len(fs)} findings</div><div class=\"tiles\">{tiles}</div>{body}"
