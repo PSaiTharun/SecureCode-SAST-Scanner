@@ -74,14 +74,14 @@ def cmd_scan(a, parser):
         data = {"tool": "SecureCode SAST Scanner", "version": __version__,
                 "fingerprints": sorted({f.fingerprint for f in findings})}
         Path(a.write_baseline).parent.mkdir(parents=True, exist_ok=True)
-        Path(a.write_baseline).write_text(json.dumps(data, indent=2), encoding="utf-8")
+        Path(a.write_baseline).write_text(json.dumps(data, indent=2), encoding="utf-8")  # sast:ignore SC006 -- CLI writes to the path the user chose
         print(f"Baseline with {len(data['fingerprints'])} findings written: {a.write_baseline}")
         return 0
 
     baselined = 0
     if a.baseline:
         try:
-            known = set(json.loads(Path(a.baseline).read_text(encoding="utf-8")).get("fingerprints", []))
+            known = set(json.loads(Path(a.baseline).read_text(encoding="utf-8")).get("fingerprints", [])) # sast:ignore SC006 -- CLI reads the path the user chose
         except (OSError, ValueError) as exc:
             raise ValueError(f"Cannot read baseline {a.baseline}: {exc}")
         kept = [f for f in findings if f.fingerprint not in known]
@@ -105,7 +105,7 @@ def cmd_scan(a, parser):
         if a.output:
             out = Path(a.output)
             out.parent.mkdir(parents=True, exist_ok=True)
-            out.write_text(text, encoding="utf-8")
+            out.write_text(text, encoding="utf-8")  # sast:ignore SC006 -- CLI writes to the path the user chose
             print(f"Report written: {a.output}  ({len(findings)} findings: {rep.summary_counts(findings)}"
                   + (f"; {extra}" if extra else "") + ")")
         else:
